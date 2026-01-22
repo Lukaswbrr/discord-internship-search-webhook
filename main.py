@@ -28,6 +28,12 @@ def send_alert():
     discord_worldwide_content = "## New Internships found! @everyone"
     discord_brazil_content = "## New Internships found in Brazil! @everyone"
 
+    if not results_worldwide:
+        discord_worldwide_content = "\n\nNo new internships found worldwide."
+    
+    if not results_brazil:
+        discord_brazil_content = "\n\nNo new internships found in Brazil."
+
     for k in results_worldwide:
         if len(discord_worldwide_content) > 1000:
             discord_worldwide_content += "\n\n*And more...*"
@@ -37,7 +43,7 @@ def send_alert():
     
     for k in results_brazil:
         if len(discord_brazil_content) > 1000:
-            discord_brazil_content += "\n\n*E mais...*"
+            discord_brazil_content += "\n\n*And more...*"
             break
 
         discord_brazil_content += format_html_data(k)
