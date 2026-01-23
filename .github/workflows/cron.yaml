@@ -26,4 +26,6 @@ jobs:
         env:
           # Aqui você pega a URL secreta do seu Discord/Telegram que configurou no GitHub
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
         run: python main.py
