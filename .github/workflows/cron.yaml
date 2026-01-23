@@ -1,9 +1,9 @@
 name: Run script every hour
 
 on:
-    schedule:
-        - cron: '0 * * * *' # Runs at minute 0 of every hour
-    workflow_dispatch: # Allows manual triggering by clicking a button (for testing)
+  schedule:
+      - cron: '0 * * * *' # Runs at minute 0 of every hour
+  workflow_dispatch: # Allows manual triggering by clicking a button (for testing)
 
 jobs:
   scrape:

@@ -1,12 +1,15 @@
 import requests
 import datetime
 import os
+from supabase import create_client
 from search import search_global_internships, search_brazil_github_internships, search_brazil_internships
 from dotenv import load_dotenv
 
 load_dotenv()
 
 WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL")
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 def send_alert():
     try:
@@ -24,7 +27,13 @@ def send_alert():
             print("Success!")
         else:
             print(f"Discord Failed Payload HTTP Error: {response.status_code}")
+        
+        return
     
+    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+    supabase_data = supabase.table("found_internships").select("link").execute()
+    existing_links = [item['link'] for item in supabase_data.data]
+
     discord_worldwide_content = "## New Internships found! @everyone"
     discord_brazil_content = "## New Internships found in Brazil! @everyone"
 
@@ -35,18 +44,28 @@ def send_alert():
         discord_brazil_content = "\n\nNo new internships found in Brazil."
 
     for k in results_worldwide:
+        if k['href'] in existing_links:
+            print(f"Link already exists in database, skipping: {k['href']}")
+            continue
+
         if len(discord_worldwide_content) > 1000:
             discord_worldwide_content += "\n\n*And more...*"
             break
 
         discord_worldwide_content += format_html_data(k)
+        supabase.table("found_internships").insert({"title": k['title'], "link": k['href'], "type": "worldwide"}).execute()
     
     for k in results_brazil:
+        if k['href'] in existing_links:
+            print(f"Link already exists in database, skipping: {k['href']}")
+            continue
+
         if len(discord_brazil_content) > 1000:
             discord_brazil_content += "\n\n*And more...*"
             break
 
         discord_brazil_content += format_html_data(k)
+        supabase.table("found_internships").insert({"title": k['title'], "link": k['href'], "type": "brazil"}).execute()
 
     discord_worldwide_payload = {
         "username": "Internship Job Posts Bot (Worldwide)", # Bot name
@@ -80,5 +99,14 @@ def format_html_data(dict_data):
     body = dict_data["body"]
 
     return f"\n**{title}**\n{link}\n"
+
+def test_stuff():
+    url = os.getenv("SUPABASE_URL")
+    key = os.getenv("SUPABASE_KEY")
+    supabase = create_client(url, key)
+    data = supabase.table("test").select("name").execute()
+    print(data)
+
+#test_stuff()
 
 send_alert()
