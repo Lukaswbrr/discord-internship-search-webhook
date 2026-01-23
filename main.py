@@ -45,7 +45,6 @@ def send_alert():
 
     for k in results_worldwide:
         if k['href'] in existing_links:
-            print(f"Link already exists in database, skipping: {k['href']}")
             continue
 
         if len(discord_worldwide_content) > 1000:
@@ -57,7 +56,6 @@ def send_alert():
     
     for k in results_brazil:
         if k['href'] in existing_links:
-            print(f"Link already exists in database, skipping: {k['href']}")
             continue
 
         if len(discord_brazil_content) > 1000:
@@ -100,13 +98,5 @@ def format_html_data(dict_data):
 
     return f"\n**{title}**\n{link}\n"
 
-def test_stuff():
-    url = os.getenv("SUPABASE_URL")
-    key = os.getenv("SUPABASE_KEY")
-    supabase = create_client(url, key)
-    data = supabase.table("test").select("name").execute()
-    print(data)
-
-#test_stuff()
 
 send_alert()
