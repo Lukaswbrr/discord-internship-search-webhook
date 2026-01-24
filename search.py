@@ -10,7 +10,7 @@ def filter_results(results, lang="en"):
     # Terms that indicate a generic search page (Bad)
     banned_url_terms = ["/jobs/search", "/remote-brazil-jobs", "linkedin.com/jobs/search", "/blog", "/careers"]
     banned_title_terms = ["jobs in", "top 20", "hiring now", "search for"]
-    ptbr_banned_title_terms = ["vagas de", "top 20", "contratando agora", "buscar por", "pleno", "sênior", "vagas"]
+    ptbr_banned_title_terms = ["vagas de", "top 20", "contratando agora", "buscar por", "pleno", "sênior"]
     ptbr_banned_body_terms = ["vagas encerradas", "inscrições encerradas", "candidaturas encerradas", "não há vagas", "nenhuma vaga encontrada", "pleno", "sênior", "não está mais ativa", "arquivada"]
 
     for res in results:
