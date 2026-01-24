@@ -11,7 +11,7 @@ def filter_results(results, lang="en"):
     banned_url_terms = ["/jobs/search", "/remote-brazil-jobs", "linkedin.com/jobs/search", "/blog", "/careers"]
     banned_title_terms = ["jobs in", "top 20", "hiring now", "search for"]
     ptbr_banned_title_terms = ["vagas de", "top 20", "contratando agora", "buscar por", "pleno", "sênior", "vagas"]
-    ptbr_banned_body_terms = ["vagas encerradas", "inscrições encerradas", "candidaturas encerradas", "não há vagas", "nenhuma vaga encontrada", "pleno", "sênior", "não está mais ativa"]
+    ptbr_banned_body_terms = ["vagas encerradas", "inscrições encerradas", "candidaturas encerradas", "não há vagas", "nenhuma vaga encontrada", "pleno", "sênior", "não está mais ativa", "arquivada"]
 
     for res in results:
         link = res['href']
