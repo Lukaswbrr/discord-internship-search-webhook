@@ -37,10 +37,10 @@ def send_alert():
     discord_worldwide_content = "## New Internships found! @everyone"
     discord_brazil_content = "## New Internships found in Brazil! @everyone"
 
-    if results_worldwide.empty():
+    if not results_worldwide:
         discord_worldwide_content = "\n\nNo new internships found worldwide."
     
-    if results_brazil.empty():
+    if not results_brazil:
         discord_brazil_content = "\n\nNo new internships found in Brazil."
 
     for k in results_worldwide:
