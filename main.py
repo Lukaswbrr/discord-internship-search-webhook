@@ -31,8 +31,6 @@ def send_alert():
         return
     
     supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-    supabase_data = supabase.table("found_internships").select("link").execute()
-    existing_links = [item['link'] for item in supabase_data.data]
 
     discord_worldwide_content = "## New Internships found! @everyone"
     discord_brazil_content = "## New Internships found in Brazil! @everyone"
@@ -41,9 +39,6 @@ def send_alert():
     clear_results_brazil = []
 
     for k in results_worldwide:
-        if k['href'] in existing_links:
-            continue
-
         if len(discord_worldwide_content) > 1000:
             discord_worldwide_content += "\n\n*And more...*"
             break
@@ -53,10 +48,6 @@ def send_alert():
         supabase.table("found_internships").insert({"title": k['title'], "link": k['href'], "type": "worldwide"}).execute()
     
     for k in results_brazil:
-        if k['href'] in existing_links:
-            results_brazil.remove(k)
-            continue
-
         if len(discord_brazil_content) > 1000:
             discord_brazil_content += "\n\n*And more...*"
             break

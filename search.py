@@ -1,6 +1,18 @@
 import requests
+import os
+from supabase import create_client
 from ddgs import DDGS
 from bs4 import BeautifulSoup
+from dotenv import load_dotenv
+
+load_dotenv()
+
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+supabase_data = supabase.table("found_internships").select("link").execute()
+existing_links = [item['link'] for item in supabase_data.data]
 
 def verify_link_is_alive(url):
     """
@@ -69,6 +81,9 @@ def filter_results(results, lang="en"):
         body = res["body"]
         title = res['title']
         
+        if link in existing_links:
+            continue
+
         # 1. Skip if URL looks like a search aggregator page
         if any(term in link for term in banned_url_terms):
             continue
