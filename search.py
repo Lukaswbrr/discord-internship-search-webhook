@@ -70,6 +70,7 @@ def filter_results(results, lang="en"):
     
     # Terms that indicate a generic search page (Bad)
     banned_url_terms = ["/jobs/search", "/remote-brazil-jobs", "linkedin.com/jobs/search", "/blog", "/talks", "?not_found=true", "404"]
+    banned_body_terms = ["closed job", "no longer accepting", "job expired", "position filled"]
     banned_title_terms = ["jobs in", "top 20", "hiring now", "search for", "mid-level", "senior"]
     
     necessary_body_terms = ["remote", "remoto", "home office", "work anywhere"]
@@ -109,6 +110,26 @@ def filter_results(results, lang="en"):
         # 3. Verify link is alive (no 404s or soft 404s)
         if not verify_link_is_alive(link):
             continue
+
+        # 4. Verify using BeautifulSoup banned terms in body
+        # (in case DDGS body snippet was insufficient)
+        soup = BeautifulSoup(r.text[:50000], "html.parser")
+        text_content = soup.get_text(" ", strip=True).lower()
+        title_content = soup.title.string.lower() if soup.title else ""
+
+        if any(p in title_content for p in banned_title_terms):
+            continue
+
+        if not any(term in text_content for term in necessary_body_terms):
+            continue
+            
+        if any(term in text_content for term in banned_body_terms):
+            continue
+
+        if lang == "pt":
+            if any(term in text_content for term in ptbr_banned_body_terms):
+                continue
+        
                     
         clean_results.append(res)
         
