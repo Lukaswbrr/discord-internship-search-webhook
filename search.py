@@ -44,7 +44,7 @@ def verify_link_is_alive(url):
 
         # 2. SOFT FAIL (Page Content)
         # We parse only the first 5k characters to save time/memory
-        soup = BeautifulSoup(r.text[:50000], "html.parser")
+        soup = BeautifulSoup(r.text[:50000], "lxml")
         text_content = soup.get_text(" ", strip=True).lower()
         title_content = soup.title.string.lower() if soup.title else ""
 
@@ -67,6 +67,10 @@ def filter_results(results, lang="en"):
     and keep only specific job listings.
     """
     clean_results = []
+
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    }
     
     # Terms that indicate a generic search page (Bad)
     banned_url_terms = ["/jobs/search", "/remote-brazil-jobs", "linkedin.com/jobs/search", "/blog", "/talks", "?not_found=true", "404"]
@@ -113,7 +117,9 @@ def filter_results(results, lang="en"):
 
         # 4. Verify using BeautifulSoup banned terms in body
         # (in case DDGS body snippet was insufficient)
-        soup = BeautifulSoup(r.text[:50000], "html.parser")
+        r = requests.get(link, headers=headers, timeout=5, allow_redirects=True)
+
+        soup = BeautifulSoup(r.text[:50000], "lxml")
         text_content = soup.get_text(" ", strip=True).lower()
         title_content = soup.title.string.lower() if soup.title else ""
 
